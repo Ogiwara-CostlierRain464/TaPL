@@ -51,11 +51,16 @@ let rec eval1 t = match t with
   | _ ->
     raise NoRuleApplies                
              
+(* 正規形になるまで実行 *)
+let rec eval t =
+  try let t' = eval1 t in
+    eval t'
+  with NoRuleApplies -> t      
 
 let () = 
   let _ = eval1(TmIf(1,
-    TmZero(1),
+    TmFalse(1),
     TmSucc(1, TmZero(1)),
-    TmPred(1, TmZero(1))
+    TmIsZero(1,TmTrue(1))
   )) in ()
 
