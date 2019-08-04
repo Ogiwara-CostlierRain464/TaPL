@@ -40,14 +40,13 @@ let rec pickfreshname ctx name =
   | Some(name, _) -> pickfreshname ctx (name ^ "'")
   | None          -> let bind = (name, NameBind) in (bind::ctx, name)
 
-(* 項の文字列表現。TaPL の printtm の純粋関数バージョン(単純に文字列を返す) *)
+(* TaPL の printtm の純粋関数バージョン *)
 let rec string_of_term ctx = function
   | TmVar(x, n) ->
-      if ctxlength ctx = n then
+      if ctxlength ctx == n then
         index2name ctx x |> getOrElse "[bad index]"
       else
         "[bad index]"
-
   | TmAbs(name, tm) ->
       let (ctx', name') = pickfreshname ctx name in
       "(λ " ^ name' ^ ". " ^ (string_of_term ctx' tm) ^ ")"
@@ -108,7 +107,7 @@ let rec eval ctx t =
   | TmWrong -> t
   | _       -> eval ctx t'
 
-(* テスト *)
+
 let testcases = [
   (* (λ x. x) λ y. y => λ y. y *)
   (TmApp(TmAbs("x", TmVar(0, 1)), TmAbs("y", TmVar(0, 1))),                 TmAbs("y", TmVar(0, 1)));
