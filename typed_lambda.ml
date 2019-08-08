@@ -7,10 +7,10 @@ type ty =
   | TyArr of ty * ty
   | TyBool  
 
-let print_ty ty =
+let rec str_ty ty =
   match ty with
-  | TyArr(_,_) -> "TyArr"
-  | _ -> "TyBool"  
+  | TyArr(t1,t2) -> str_ty(t1) ^ " -> " ^ str_ty(t2) 
+  | _ -> "bool"
   
 type binding = 
   | NameBind
@@ -31,9 +31,9 @@ type context = (string * binding) list
 let addbinding ctx x bind = 
   (x, bind)::ctx
 
-exception E of string
+exception TypeError of string
 
-let error fi str = raise(E str)
+let error fi str = raise(TypeError str)
 let getbinding fi ctx n = List.nth ctx n |> snd
 
 (* 文脈ctxにおいて特定の変数iに対応する型の仮定を取り出す *)
@@ -71,15 +71,20 @@ let rec typeof ctx t = match t with
     else error fi "guard of conditional not a boolean"  
 
 
+let testcases = [
+  TmAbs(1, "x", TyArr(TyBool,TyBool),TmVar(1, 0, 1));
+  TmAbs(1, "y", TyBool,TmVar(1, 0, 1));
+  TmApp(1,
+    TmAbs(1, "x", TyArr(TyArr(TyArr(TyBool,TyBool),TyBool),TyBool),TmVar(1, 0, 1)),
+    TmAbs(1, "y", TyArr(TyBool,TyBool),TmVar(1, 0, 1))
+  );
+]
+
+
 (* (\x.x)(\y.y) => (\y.y) に型付けを行う  *)
 let () = 
-      let res = typeof [] (TmApp(1,
-       (* \x.x *) 
-       TmAbs(1, "x", TyArr(TyBool,TyBool),TmVar(1, 0, 1)),
-       (* \y.y *) 
-       TmAbs(1, "y",TyBool,TmVar(1, 0, 1)))
-       ) in
-       print_string(print_ty res);
-       ()
+  testcases 
+  |> List.iter (fun tm -> print_string(str_ty(typeof [] tm) ^ "\n"));
+  ()
       
       
