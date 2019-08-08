@@ -109,7 +109,7 @@ let rec eval ctx t =
 
 
 let testcases = [
-  (* (λ x. x) λ y. y => λ y. y *)
+  (* (λ x. x)  λ y. y => λ y. y *)
   (TmApp(TmAbs("x", TmVar(0, 1)), TmAbs("y", TmVar(0, 1))),                 TmAbs("y", TmVar(0, 1)));
 
   (* (λ x. λ y. x) λ z. z => λ y. λ z. z *)
