@@ -59,7 +59,7 @@ let rec eval t =
 
 let () = 
   let _ = eval1(TmIf(1,
-    TmFalse(1),
+      TmSucc(1, TmZero(1)),
     TmSucc(1, TmZero(1)),
     TmIsZero(1,TmTrue(1))
   )) in ()

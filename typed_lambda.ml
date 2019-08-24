@@ -73,11 +73,8 @@ let rec typeof ctx t = match t with
 
 let testcases = [
   TmAbs(1, "x", TyArr(TyBool,TyBool),TmVar(1, 0, 1));
+  (* \y:Bool. *)
   TmAbs(1, "y", TyBool,TmVar(1, 0, 1));
-  TmApp(1,
-    TmAbs(1, "x", TyArr(TyArr(TyArr(TyBool,TyBool),TyBool),TyBool),TmVar(1, 0, 1)),
-    TmAbs(1, "y", TyArr(TyBool,TyBool),TmVar(1, 0, 1))
-  );
 ]
 
 
